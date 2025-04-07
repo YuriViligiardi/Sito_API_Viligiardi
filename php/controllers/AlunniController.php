@@ -3,24 +3,24 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AlunniController{
-
-  //funzione index che mostra tutti gli alunni
+  
+   /**
+   * funzione index che mostra tutti gli alunni
+   * @url /alunni
+   * */
   public function index(Request $request, Response $response, $args){
-    // $conn = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    // $result = $conn->query("SELECT * FROM `alunni`");
-    // $results = $result->fetch_all(MYSQLI_ASSOC);
-    $db = Db::getInstance();
+    $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->select("alunni");
 
     $response->getBody()->write(json_encode($results));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 
-  //funzione show che mostra nel dettaglio l'alunno richiesto
+  /**
+   * funzione show che mostra nel dettaglio l'alunno richiesto
+   * @url /alunni/{id}
+   * */
   public function show(Request $request, Response $response, $args){
-    // $conn = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    // $result = $conn->query("SELECT * FROM `alunni` WHERE `id`= " . $args["id"] . "");
-    // $results = $result->fetch_all(MYSQLI_ASSOC);
     $db = Db::getInstance();
     $result = $db->selectId("alunni", $args["id"]);
 
@@ -28,40 +28,58 @@ class AlunniController{
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 
-  //funzione create che crea un alunno
+  /**
+   * funzione create che crea un alunno
+   * @url /alunni
+   * */
   public function create(Request $request, Response $response, $args){
-    // $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    // $body = json_decode($request->getBody()->getContents(), true);
-    // $result = $mysqli_connection->query("INSERT INTO `alunni`(`nome`, `cognome`) VALUES ('" . $body["nome"] . "', '" . $body["cognome"] . "')");
     $body = json_decode($request->getBody()->getContents(), true);
+    $alunno =  array{
+        "nome" => $body["nome"];
+        "cognome" => $body["cognome"];
+    }
     $db = Db::getInstance();
-    $result = $db->create("alunni", $body["nome"], $body["cognome"]);
+    $result = $db->create("alunni", $alunno);
+    if ($result) {
+      $response->getBody()->write("Alunno " . $body["nome"] . " " . $body["cognome"] . " creato");
+      return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    } 
 
-    $response->getBody()->write(json_encode($results));
-    return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    $response->getBody()->write("Alunno non creato");
+    return $response->withHeader("Content-type", "application/json")->withStatus(404);
   }
 
-  //funzione update che aggiorna un alunno
+  /**
+   * funzione update che aggiorna un alunno
+   * @url /alunni/{id}
+   * */
   public function update(Request $request, Response $response, $args){
-    // $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    // $body = json_decode($request->getBody()->getContents(), true);
-    // $result = $mysqli_connection->query("UPDATE `alunni` SET `nome`='" . $body["nome"] . "',`cognome`='" . $body["cognome"] . "' WHERE `id` = " . $args["id"] . "");
     $body = json_decode($request->getBody()->getContents(), true);
+    
     $db = Db::getInstance();
-    $result = $db->update("alunni", $body["nome"], $body["cognome"]);
+    $result = $db->update("alunni", $body, "id=" . $args["id"]);
+    if ($result) {
+      $response->getBody()->write("Alunno " . $args["id"] . " aggiornato");
+      return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    }
 
-    $response->getBody()->write(json_encode($results));
+    $response->getBody()->write("Alunno non aggiornato");
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 
-  //funzione destroy che elimina un alunno
+  /**
+   * funzione destroy che elimina un alunno
+   * @url /alunni/{id}
+   * */
   public function destroy(Request $request, Response $response, $args){
-    // $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-    // $result = $mysqli_connection->query("DELETE FROM `alunni` WHERE `id` = " . $args["id"] . "");
     $db = Db::getInstance();
     $result = $db->update("alunni", $args["id"]);
+    if ($result) {
+      $response->getBody()->write("Alunno " . $args["id"] . " eliminato");
+      return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    }
 
-    $response->getBody()->write(json_encode($results));
+    $response->getBody()->write("Alunno " . $args["id"] . " non eliminato");
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 }
