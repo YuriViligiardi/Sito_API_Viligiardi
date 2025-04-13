@@ -21,8 +21,6 @@
             return [];
         }
 
-        
-
         public function selectId($table, $id) {
             return $this->select($table,"id=$id");
         }

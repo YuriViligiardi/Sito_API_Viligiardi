@@ -34,11 +34,21 @@ class AlunniController{
    * */
       public function create(Request $request, Response $response, $args){
         $body = json_decode($request->getBody()->getContents(), true);
+        $certificazione = array{
+          "id" => $body["alunno_id"];
+          "titolo" => $body["titolo"];
+          "voto" => $body["votazione"];
+          "ente" => $body["ente"];
+        }
         $db = Db::getInstance();
-        $result = $db->create("certificazioni", $body["alunno_id"], $body["titolo"], $body["votazione"], $body["ente"]);
+        $result = $db->create("certificazioni", $certificazione);
+        if ($result) {
+          $response->getBody()->write("Certificazione creata");
+          return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        } 
     
-        $response->getBody()->write(json_encode($results));
-        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        $response->getBody()->write("Certificazione non creata");
+        return $response->withHeader("Content-type", "application/json")->withStatus(404);
       }
     
       /**
@@ -48,10 +58,14 @@ class AlunniController{
       public function update(Request $request, Response $response, $args){
         $body = json_decode($request->getBody()->getContents(), true);
         $db = Db::getInstance();
-        $result = $db->update("alunni", $body["nome"], $body["cognome"], $args["id"]);
+        $result = $db->update("certificazioni", $body, "id=" . $args["id"]);
+        if ($result) {
+          $response->getBody()->write("Certificazione " . $args["id"] . " aggiornata");
+          return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        } 
     
-        $response->getBody()->write(json_encode($results));
-        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        $response->getBody()->write("Certificazione " . $args["id"] . " non aggiornata");
+        return $response->withHeader("Content-type", "application/json")->withStatus(404);
       }
     
       /**
@@ -59,12 +73,14 @@ class AlunniController{
    * @url /certificazioni/{id}
    * */
       public function destroy(Request $request, Response $response, $args){
-        // $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-        // $result = $mysqli_connection->query("DELETE FROM `alunni` WHERE `id` = " . $args["id"] . "");
         $db = Db::getInstance();
-        $result = $db->update("alunni", $args["id"]);
+        $result = $db->update("certificazioni", $args["id"]);
+        if ($result) {
+          $response->getBody()->write("Certificazione " . $args["id"] . " eliminata");
+          return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        } 
     
-        $response->getBody()->write(json_encode($results));
-        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        $response->getBody()->write("Certificazione " . $args["id"] . " non eliminata");
+        return $response->withHeader("Content-type", "application/json")->withStatus(404);
       }
 }

@@ -48,14 +48,13 @@ class AlunniController{
     $response->getBody()->write("Alunno non creato");
     return $response->withHeader("Content-type", "application/json")->withStatus(404);
   }
-
+  
   /**
    * funzione update che aggiorna un alunno
    * @url /alunni/{id}
    * */
   public function update(Request $request, Response $response, $args){
     $body = json_decode($request->getBody()->getContents(), true);
-    
     $db = Db::getInstance();
     $result = $db->update("alunni", $body, "id=" . $args["id"]);
     if ($result) {
@@ -64,7 +63,7 @@ class AlunniController{
     }
 
     $response->getBody()->write("Alunno non aggiornato");
-    return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    return $response->withHeader("Content-type", "application/json")->withStatus(404);
   }
 
   /**
@@ -80,6 +79,6 @@ class AlunniController{
     }
 
     $response->getBody()->write("Alunno " . $args["id"] . " non eliminato");
-    return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    return $response->withHeader("Content-type", "application/json")->withStatus(404);
   }
 }
