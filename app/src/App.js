@@ -1,25 +1,39 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
-function App() {
+export default function App() {
+  const {alunni, setAlunni} = useState([]);
+  const a = [
+    {
+      "id": "1",
+      "nome": "claudio",
+      "cognome": "benve"
+    },
+    {
+      "id": "2",
+      "nome": "ivan",
+      "cognome": "bruno"
+    }
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div class="MyApp">
+      <h1>ALUNNI</h1>
+      { alunni.length === 0 ? (
+        <button onClick={() => setAlunni(a)}>Carica Alunni</button>
+      ) : (
+        <table id="alunni" border="1">
+          {alunni.map((a) => (
+            <tr>
+              <td>{a.id}</td>
+              <td>{a.nome}</td>
+              <td>{a.cognome}</td>
+            </tr>
+          ))}
+        </table>
+      )
+    }
     </div>
   );
 }
-
-export default App;
