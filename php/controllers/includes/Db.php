@@ -3,7 +3,7 @@
         static protected $instance = null;
 
         public function __construct($host, $user, $password, $schema){
-            parent:: __construct($host, $user, $password, $schema);
+            parent:: __construct($host, $user, $password, $schema);     
         }
 
         public static function getInstance($host, $user, $password, $schema) {
@@ -27,7 +27,7 @@
 
         public function create($table, array $data) {
             $fields = implode(", ",array_keys($data)); 
-            $values = '"'.implode(", ",array_values($data)).'"'; 
+            $values = "'".implode("', '",array_values($data))."'";    
             $query = "INSERT INTO `$table` ($fields) VALUES ($values)";
             if($result = $this->query($query)){
                 return true;
@@ -38,10 +38,10 @@
         public function update($table, array $data, $where) {
             $set=[];
             foreach($data as $key=>$value){
-                $set[]="$key=$value";
+                $set[]="`". $key . "`= '" .$value . "'";
             }
             $fields = implode(",",$set);
-            $query = "UPDATE $table SET $set WHERE $where";
+            $query = "UPDATE $table SET $fields WHERE $where";
             if($result = $this->query($query)){
                 return true;
             }

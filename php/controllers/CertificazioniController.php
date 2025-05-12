@@ -2,7 +2,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AlunniController{ 
+class CertificazioniController{ 
 
     /**
    * funzione index che mostra tutti i certificazione
@@ -21,7 +21,7 @@ class AlunniController{
    * @url /certificazioni/{id}
    * */
       public function show(Request $request, Response $response, $args){
-        $db = Db::getInstance();
+        $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
         $result = $db->selectId("certificazioni", $args["id"]);
     
         $response->getBody()->write(json_encode($results));
@@ -34,13 +34,13 @@ class AlunniController{
    * */
       public function create(Request $request, Response $response, $args){
         $body = json_decode($request->getBody()->getContents(), true);
-        $certificazione = array{
-          "id" => $body["alunno_id"];
-          "titolo" => $body["titolo"];
-          "voto" => $body["votazione"];
-          "ente" => $body["ente"];
-        }
-        $db = Db::getInstance();
+        $certificazione = array(
+          "id" => $body["alunno_id"],
+          "titolo" => $body["titolo"],
+          "voto" => $body["votazione"],
+          "ente" => $body["ente"]
+        );
+        $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
         $result = $db->create("certificazioni", $certificazione);
         if ($result) {
           $response->getBody()->write("Certificazione creata");
@@ -57,7 +57,7 @@ class AlunniController{
    * */
       public function update(Request $request, Response $response, $args){
         $body = json_decode($request->getBody()->getContents(), true);
-        $db = Db::getInstance();
+        $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
         $result = $db->update("certificazioni", $body, "id=" . $args["id"]);
         if ($result) {
           $response->getBody()->write("Certificazione " . $args["id"] . " aggiornata");
@@ -73,7 +73,7 @@ class AlunniController{
    * @url /certificazioni/{id}
    * */
       public function destroy(Request $request, Response $response, $args){
-        $db = Db::getInstance();
+        $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
         $result = $db->update("certificazioni", $args["id"]);
         if ($result) {
           $response->getBody()->write("Certificazione " . $args["id"] . " eliminata");

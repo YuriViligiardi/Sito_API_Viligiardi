@@ -19,9 +19,9 @@ class AlunniController{
   /**
    * funzione show che mostra nel dettaglio l'alunno richiesto
    * @url /alunni/{id}
-   * */
+   * */ 
   public function show(Request $request, Response $response, $args){
-    $db = Db::getInstance();
+    $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->selectId("alunni", $args["id"]);
 
     $response->getBody()->write(json_encode($results));
@@ -34,11 +34,11 @@ class AlunniController{
    * */
   public function create(Request $request, Response $response, $args){
     $body = json_decode($request->getBody()->getContents(), true);
-    $alunno =  array{
-        "nome" => $body["nome"];
-        "cognome" => $body["cognome"];
-    }
-    $db = Db::getInstance();
+    $alunno =  array(
+        "nome" => $body["nome"],
+        "cognome" => $body["cognome"]
+    );
+    $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->create("alunni", $alunno);
     if ($result) {
       $response->getBody()->write("Alunno " . $body["nome"] . " " . $body["cognome"] . " creato");
@@ -55,7 +55,7 @@ class AlunniController{
    * */
   public function update(Request $request, Response $response, $args){
     $body = json_decode($request->getBody()->getContents(), true);
-    $db = Db::getInstance();
+    $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->update("alunni", $body, "id=" . $args["id"]);
     if ($result) {
       $response->getBody()->write("Alunno " . $args["id"] . " aggiornato");
@@ -71,7 +71,7 @@ class AlunniController{
    * @url /alunni/{id}
    * */
   public function destroy(Request $request, Response $response, $args){
-    $db = Db::getInstance();
+    $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->update("alunni", $args["id"]);
     if ($result) {
       $response->getBody()->write("Alunno " . $args["id"] . " eliminato");
