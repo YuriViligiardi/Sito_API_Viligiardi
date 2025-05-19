@@ -17,8 +17,9 @@
             $query = "SELECT * FROM $table WHERE $where";
             if($result = $this->query($query)){
                 return $result->fetch_all(MYSQLI_ASSOC);
+            } else {
+                return [];
             }
-            return [];
         }
 
         public function selectId($table, $id) {

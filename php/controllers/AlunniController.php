@@ -12,7 +12,7 @@ class AlunniController{
     $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->select("alunni");
 
-    $response->getBody()->write(json_encode($results));
+    $response->getBody()->write(json_encode($result));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 
@@ -24,7 +24,7 @@ class AlunniController{
     $db = Db::getInstance('my_mariadb', 'root', 'ciccio', 'scuola');
     $result = $db->selectId("alunni", $args["id"]);
 
-    $response->getBody()->write(json_encode($results));
+    $response->getBody()->write(json_encode($result));
     return $response->withHeader("Content-type", "application/json")->withStatus(200);
   }
 

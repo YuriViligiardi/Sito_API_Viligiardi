@@ -14,3 +14,11 @@ table {
 tr, td {
   padding: 10px;
 }
+
+.form-container {
+  margin-top: 15px;
+}
+
+input {
+  margin-bottom: 10px;
+}
